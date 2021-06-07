@@ -1,0 +1,45 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "appBaseName": {
+            "type": "string"
+        }
+    },
+    "variables": {
+        //"appBaseName": "[concat('app', uniqueString(resourceGroup().id))]"
+    },
+    "resources": [
+        {
+            "name": "appServicePlan1",
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2018-02-01",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "F1",
+                "capacity": 1
+            },
+            "tags": {
+                "displayName": "appServicePlan1"
+            },
+            "properties": {
+                "name": "appServicePlan1"
+            }
+        },
+        {
+            "name": "[parameters('appBaseName')]",
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2018-11-01",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "displayName": "[parameters('appBaseName')]"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', 'appServicePlan1')]"
+            ],
+            "properties": {
+                "name": "[parameters('appBaseName')]",
+            }
+        }
+    ]
+}
